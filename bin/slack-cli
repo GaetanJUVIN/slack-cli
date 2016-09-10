@@ -1,0 +1,41 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require 'yaml'
+require 'slack-ruby-client'
+
+if File.exist?(ENV['HOME'] + '/.slack-cli.yml') == false
+  puts 'echo "token: YOUR TOKEN" > ~/.slack-cli.yml'
+  exit(1)
+end
+
+if ARGV.count != 3
+  puts 'Usage: slack-cli "slack-name" "channel|@user" "message"'
+  exit(1)
+end
+
+slack_name = ARGV[0]
+
+channel    = ARGV[1]
+message    = ARGV[2]
+
+options = YAML.load_file(ENV['HOME'] + '/.slack-cli.yml')
+if options[slack_name] == nil or options[slack_name]['token'] == nil
+  puts 'Cannot found token in ~/.slack-cli.yml'
+  exit(1)
+end
+
+client = Slack::Web::Client.new(token: options[slack_name]['token'])
+client.auth_test
+
+nbr_try = 0
+begin
+	client.chat_postMessage(channel: channel, text: message, as_user: true)
+rescue Exception => e
+	if nbr_try == 0 and e.message == 'channel_not_found'
+		channel = "@#{channel}"
+		retry
+	end
+	nbr_try += 1
+	puts e.message
+end
