@@ -30,7 +30,13 @@ client.auth_test
 
 nbr_try = 0
 begin
-	client.chat_postMessage(channel: channel, text: message, as_user: true)
+  params = {channel: channel, text: message, as_user: true}
+  if options[slack_name]['as_user'] != nil and options[slack_name]['as_user'] == false
+    params[:as_user] = false
+    params[:username] = options[slack_name]['as_user_username'] if options[slack_name]['as_user_username']
+    params[:icon_emoji] = options[slack_name]['as_user_emoji']  if options[slack_name]['as_user_emoji']
+  end
+  client.chat_postMessage(params)
 rescue Exception => e
 	if nbr_try == 0 and e.message == 'channel_not_found'
 		channel = "@#{channel}"
