@@ -16,6 +16,15 @@ Create your token here: https://api.slack.com/docs/oauth-test-tokens
       token: 'XXXX-XXXX-XXXX-XXXX'
     $>
 ```
+
+Example of slack-cli.yml
+```
+42_US_ORG_bocal:
+  as_user: false
+  as_user_username: 'Attila-Term'
+  as_user_emoji: ':alien:'
+  token: 'XXX-XXX-XXX-XXX-XXX'
+```
 ## Usage
 
 
