@@ -9,15 +9,28 @@ if File.exist?(ENV['HOME'] + '/.slack-cli.yml') == false
   exit(1)
 end
 
-if ARGV.count != 3
+def usage
   puts 'Usage: slack-cli "slack-name" "channel|@user" "message"'
   exit(1)
 end
 
+
+if [2, 3].include?(ARGV.count) == false
+  usage
+end
+
+
 slack_name = ARGV[0]
 
 channel    = ARGV[1]
-message    = ARGV[2]
+
+if ARGV.count == 3
+  message    = ARGV[2]
+elsif STDIN.tty? == false
+  message  = $stdin.read
+else
+  usage
+end
 
 options = YAML.load_file(ENV['HOME'] + '/.slack-cli.yml')
 if options[slack_name] == nil or options[slack_name]['token'] == nil
