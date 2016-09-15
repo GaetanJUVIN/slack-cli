@@ -30,4 +30,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'json', '~> 2.0'
   spec.add_dependency 'thread_safe', '~> 0.3'
   spec.add_dependency 'minitest', '~> 5.9'
+  spec.add_dependency 'colorize', '~> 0.8'
 end

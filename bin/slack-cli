@@ -1,8 +1,10 @@
 #!/usr/bin/env ruby
 
-require "bundler/setup"
+require 'rubygems'
+require 'bundler/setup'
 require 'yaml'
 require 'slack-ruby-client'
+require 'colorize'
 
 if File.exist?(ENV['HOME'] + '/.slack-cli.yml') == false
   puts 'echo "token: YOUR TOKEN" > ~/.slack-cli.yml'
@@ -18,7 +20,6 @@ end
 if [2, 3].include?(ARGV.count) == false
   usage
 end
-
 
 slack_name = ARGV[0]
 
@@ -41,6 +42,8 @@ end
 client = Slack::Web::Client.new(token: options[slack_name]['token'])
 client.auth_test
 
+has_been_sent = false
+
 nbr_try = 0
 begin
   params = {channel: channel, text: message, as_user: true}
@@ -57,4 +60,9 @@ rescue Exception => e
 	end
 	nbr_try += 1
 	puts e.message
+  has_been_sent = false
+end
+
+if has_been_sent
+  puts 'SENT'.light_green
 end
